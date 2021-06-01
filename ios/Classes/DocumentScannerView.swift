@@ -125,8 +125,8 @@ private class DocumentScannerView: NSObject, FlutterPlatformView, DocumentScanne
         self.channel?.invokeMethod("onCapture", arguments: data)    
     }
     
-    func documentScannerControllerDidCancel(_ scanner: DocumentScannerController) {
-        self.channel?.invokeMethod("canceled", arguments: nil)
+    func documentScannerController(_ scanner: DocumentScannerController, didStartCapturingPicture start: Bool) {
+        self.channel?.invokeMethod("isCapturing", arguments: nil)
     }
     
     func documentScannerController(_ scanner: DocumentScannerController, didFailWithError error: Error) {

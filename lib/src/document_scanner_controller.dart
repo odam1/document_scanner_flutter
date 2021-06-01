@@ -130,11 +130,15 @@ class DocumentScannerController {
         final data = (call.arguments as Map).cast<String, dynamic>();
         _onCapture(data);
         break;
-      case "scanned":
-        final data = (call.arguments as Map).cast<String, dynamic>();
-        final scannedDocuments = data.keys.map((e) => ScannedDocument.fromMap((data[e] as Map).cast<String, dynamic>())).toList();
-        this.onScanned.call(scannedDocuments);
+      case "isCapturing":
+        _isProcessing = true;
+        onScannerInfoChanged.add(true);
         break;
+      // case "scanned":
+      //   final data = (call.arguments as Map).cast<String, dynamic>();
+      //   final scannedDocuments = data.keys.map((e) => ScannedDocument.fromMap((data[e] as Map).cast<String, dynamic>())).toList();
+      //   this.onScanned.call(scannedDocuments);
+      //   break;
       // case "canceled":
       //   this.onCanceled.call();
       //   resetScanner();

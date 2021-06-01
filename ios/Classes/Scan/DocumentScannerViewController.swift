@@ -220,6 +220,9 @@ extension DocumentScannerViewController: RectangleDetectionDelegateProtocol {
     
     func didStartCapturingPicture(for captureSessionManager: CaptureSessionManager) {
         stopSession()
+        if let controller = self.navigationController as? DocumentScannerController {
+            controller.documentScannerDelegate?.documentScannerController(controller, didStartCapturingPicture: true)
+        }
     }
     
     func captureSessionManager(_ captureSessionManager: CaptureSessionManager, didCapturePicture picture: UIImage, withQuad quad: Quadrilateral?) {

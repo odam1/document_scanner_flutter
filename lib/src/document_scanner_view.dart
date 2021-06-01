@@ -256,6 +256,28 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
                       child: Image.memory(
                         widget.controller.scannedDocumentList.last.cropImage?.image ?? widget.controller.scannedDocumentList.last.initialImage.image,
                         fit: BoxFit.contain,
+                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                          if (frame == null) {
+                            return Container(
+                              width: 40,
+                              height: 40,
+                              color: Colors.black26,
+                              padding: const EdgeInsets.all(12),
+                              child: Builder(
+                                builder: (context) {
+                                  if (Platform.isIOS) {
+                                    return CupertinoActivityIndicator();
+                                  }
+                                  return CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                          return child;
+                        },
                       ),
                     ),
 

@@ -122,7 +122,7 @@ public final class DocumentScannerController: UINavigationController {
 
 public protocol DocumentScannerControllerDelegate: NSObjectProtocol {
     func documentScannerController(_ scanner: DocumentScannerController, didFinishScanningWithResults results: DocumentScannerResults)
-    //func documentScannerControllerDidCancel(_ scanner: DocumentScannerController)
+    func documentScannerController(_ scanner: DocumentScannerController, didStartCapturingPicture start: Bool)
     func documentScannerController(_ scanner: DocumentScannerController, didFailWithError error: Error)
 }
 
