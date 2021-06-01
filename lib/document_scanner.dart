@@ -1,5 +1,6 @@
+
 export 'package:document_scanner/src/document_scanner_controller.dart';
-export 'package:document_scanner/src/document_scanner_view.dart';
+export 'package:document_scanner/views/document_scanner_view.dart';
 export 'package:document_scanner/src/document_scanner_models.dart';
 
 import 'dart:async';

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:document_scanner/src/document_scanner_controller.dart';
 import 'package:document_scanner/src/document_scanner_models.dart';
+import 'package:document_scanner/views/document_scanner_list_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,10 @@ class DocumentScannerView extends StatefulWidget {
 class _DocumentScannerViewState extends State<DocumentScannerView> {
   ///
   bool isReady = false;
+
+  /// retake/rescan document index
+  int retakeIndex = -1;
+  bool get retake => retakeIndex > -1;
 
   /// current flash mode
   FlashLightMode flashLightMode = FlashLightMode(FlashLightMode.flashAuto);
@@ -47,6 +52,21 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
     setState(() {
       isReady = true;
     });
+  }
+
+  ///
+  Future onThumbnailClicked() async {
+    widget.controller.pauseScanner();
+    int? retakeIndex = -1;
+    retakeIndex = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => DocumentScannerListView(
+        controller: widget.controller,
+      ),
+    ));
+    print("Retake index: $retakeIndex");
+    this.retakeIndex = retakeIndex ?? this.retakeIndex;
+    widget.controller.resetScanner();
+    setState(() {});
   }
 
   @override
@@ -239,63 +259,36 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
           Align(
             alignment: Alignment.bottomLeft,
             child: GestureDetector(
-              onTap: widget.controller.isProcessing
-                  ? null
-                  : () {
-                      //TODO:
-                      print("Thumbnail");
-                    },
+              onTap: widget.controller.isProcessing ? null : onThumbnailClicked,
               child: Container(
-                width: 55,
+                width: 65,
                 height: 65,
                 margin: const EdgeInsets.only(left: 20, bottom: 20),
-                child: Stack(
-                  children: [
-                    //
-                    Center(
-                      child: Image.memory(
-                        widget.controller.scannedDocumentList.last.cropImage?.image ?? widget.controller.scannedDocumentList.last.initialImage.image,
-                        fit: BoxFit.contain,
-                        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                          if (frame == null) {
-                            return Container(
-                              width: 40,
-                              height: 40,
-                              color: Colors.black26,
-                              padding: const EdgeInsets.all(12),
-                              child: Builder(
-                                builder: (context) {
-                                  if (Platform.isIOS) {
-                                    return CupertinoActivityIndicator();
-                                  }
-                                  return CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
-                                  );
-                                },
-                              ),
+                child: Image.memory(
+                  widget.controller.scannedDocumentList.last.cropImage?.image ?? widget.controller.scannedDocumentList.last.initialImage.image,
+                  fit: BoxFit.contain,
+                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                    if (frame == null) {
+                      return Container(
+                        width: 40,
+                        height: 40,
+                        color: Colors.black26,
+                        padding: const EdgeInsets.all(12),
+                        child: Builder(
+                          builder: (context) {
+                            if (Platform.isIOS) {
+                              return CupertinoActivityIndicator();
+                            }
+                            return CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey),
                             );
-                          }
-                          return child;
-                        },
-                      ),
-                    ),
-
-                    //
-                    // if (widget.controller.scannedDocumentList.any((e) => e.isCropping))
-                    //   Center(
-                    //     child: Container(
-                    //       width: 30,
-                    //       height: 30,
-                    //       color: Colors.black26,
-                    //       padding: const EdgeInsets.all(8),
-                    //       child: CircularProgressIndicator(
-                    //         strokeWidth: 2,
-                    //         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    //       ),
-                    //     ),
-                    //   ),
-                  ],
+                          },
+                        ),
+                      );
+                    }
+                    return child;
+                  },
                 ),
               ),
             ),
@@ -311,11 +304,11 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
                 onPressed: widget.controller.isProcessing
                     ? null
                     : () {
-                        widget.controller.save();
+                        widget.controller.done();
                       },
                 style: ButtonStyle(backgroundColor: MaterialStateColor.resolveWith((states) => Colors.white)),
                 child: Text(
-                  "Save (${widget.controller.scannedDocumentList.length})",
+                  "Done (${widget.controller.scannedDocumentList.length})",
                   style: TextStyle(
                     color: Colors.black,
                   ),

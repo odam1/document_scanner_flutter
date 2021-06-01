@@ -100,8 +100,8 @@ class DocumentScannerController {
     return resp == true;
   }
 
-  /// save method
-  void save() {
+  /// done scanning method
+  void done() {
     this.onScanned.call(scannedDocumentList.toList());
   }
 
@@ -118,7 +118,7 @@ class DocumentScannerController {
     onScannerInfoChanged.add(true);
 
     _channel = null;
-    onScannerInfoChanged.close();
+    //TODO: onScannerInfoChanged.close();
   }
 
   ///
