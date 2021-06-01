@@ -1,0 +1,22 @@
+PODS:
+  - document_scanner (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+
+DEPENDENCIES:
+  - document_scanner (from `.symlinks/plugins/document_scanner/ios`)
+  - Flutter (from `Flutter`)
+
+EXTERNAL SOURCES:
+  document_scanner:
+    :path: ".symlinks/plugins/document_scanner/ios"
+  Flutter:
+    :path: Flutter
+
+SPEC CHECKSUMS:
+  document_scanner: 88ec94c5ec355b52368ddc50d8726e2d63bec2e2
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+
+PODFILE CHECKSUM: cc1f88378b4bfcf93a6ce00d2c587857c6008d3b
+
+COCOAPODS: 1.10.0
