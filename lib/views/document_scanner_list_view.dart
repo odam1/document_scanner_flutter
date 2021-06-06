@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:document_scanner/src/document_scanner_controller.dart';
+import 'package:document_scanner/src/document_scanner_models.dart';
+import 'package:document_scanner/views/document_scanner_crop_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -166,7 +168,16 @@ class _DocumentScannerListViewState extends State<DocumentScannerListView> {
             // crop item
             CupertinoButton(
               onPressed: () {
-                print("Crop");
+                Navigator.of(context)
+                    .push(
+                  MaterialPageRoute(
+                    builder: (_) => DocumentScannerCropView(scannedDocument: widget.controller.scannedDocumentList[currentPage - 1]),
+                  ),
+                )
+                    .then((value) {
+                  final scannedDocument = value as ScannedDocument?;
+                  if (scannedDocument == null || !mounted) return;
+                });
               },
               child: Icon(
                 CupertinoIcons.crop,
