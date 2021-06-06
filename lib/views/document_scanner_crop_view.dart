@@ -134,17 +134,61 @@ class _DocumentCropCornersView extends StatefulWidget {
 }
 
 class __DocumentCropCornersViewState extends State<_DocumentCropCornersView> {
+  ///
+  late final DocumentCropCorners corners;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.corners?.isWithinSize(widget.size) == true) {
+      this.corners = widget.corners!;
+    } else {
+      this.corners = DocumentCropCorners.initFromSize(widget.size);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final size = constraints.biggest;
-        print(widget.size);
-        print(size);
-        return Container(
-          color: Colors.black26,
-        );
-      },
+    return Stack(
+      children: [
+        // clip cover
+        IgnorePointer(
+          ignoring: true,
+          child: ClipPath(
+            clipper: _CropAreaClipper(corners),
+            child: Container(
+              color: Colors.black45,
+            ),
+          ),
+        ),
+      ],
     );
   }
+}
+
+///
+class _CropAreaClipper extends CustomClipper<Path> {
+  final DocumentCropCorners corners;
+
+  _CropAreaClipper(this.corners);
+
+  @override
+  Path getClip(Size size) {
+    this.corners.rearrange();
+
+    final path = Path();
+    path.moveTo(corners.topLeft.x, corners.topLeft.y);
+    path.lineTo(corners.topRight.x, corners.topRight.y);
+    path.lineTo(corners.bottomRight.x, corners.bottomRight.y);
+    path.lineTo(corners.bottomLeft.x, corners.bottomLeft.y);
+    path.close();
+
+    return Path()
+      ..addPath(path, Offset.zero)
+      ..addRect(Rect.fromLTWH(0, 0, size.width, size.height))
+      ..fillType = PathFillType.evenOdd;
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 }

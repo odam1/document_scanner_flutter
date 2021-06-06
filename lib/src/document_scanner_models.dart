@@ -74,6 +74,16 @@ class DocumentCropCorners {
     required this.bottomLeft,
     required this.bottomRight,
   });
+  factory DocumentCropCorners.initFromSize(Size size) {
+    final dw = size.width * 0.05;
+    final dh = size.height * 0.05;
+    return DocumentCropCorners(
+      topLeft: Point(dw, dh),
+      topRight: Point(size.width - dw, dh),
+      bottomRight: Point(size.width - dw, size.height - dh),
+      bottomLeft: Point(dw, size.height - dh),
+    );
+  }
   static DocumentCropCorners? fromList(List<Point<double>>? corners) {
     if (corners == null || corners.length != 4) {
       return null;
@@ -92,17 +102,22 @@ class DocumentCropCorners {
         bottomLeft,
         bottomRight,
       ];
-  void rearrange() {
+  DocumentCropCorners rearrange() {
     final points = [topLeft, topRight, bottomRight, bottomLeft];
     points.sort((p1, p2) => p1.y.compareTo(p2.y));
 
     final topPoints = points.sublist(0, 2)..sort((p1, p2) => p1.x.compareTo(p2.x));
-    final bottomPoints = points.sublist(3)..sort((p1, p2) => p1.x.compareTo(p2.x));
+    final bottomPoints = points.sublist(2)..sort((p1, p2) => p1.x.compareTo(p2.x));
 
     topLeft = topPoints[0];
     topRight = topPoints[1];
     bottomRight = bottomPoints[1];
-    bottomLeft = bottomPoints[0]; 
+    bottomLeft = bottomPoints[0];
+    return this;
+  }
+
+  bool isWithinSize(Size size) {
+    return this.toList().every((e) => e.x <= size.width && e.y <= size.height);
   }
 }
 
