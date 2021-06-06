@@ -92,6 +92,18 @@ class DocumentCropCorners {
         bottomLeft,
         bottomRight,
       ];
+  void rearrange() {
+    final points = [topLeft, topRight, bottomRight, bottomLeft];
+    points.sort((p1, p2) => p1.y.compareTo(p2.y));
+
+    final topPoints = points.sublist(0, 2)..sort((p1, p2) => p1.x.compareTo(p2.x));
+    final bottomPoints = points.sublist(3)..sort((p1, p2) => p1.x.compareTo(p2.x));
+
+    topLeft = topPoints[0];
+    topRight = topPoints[1];
+    bottomRight = bottomPoints[1];
+    bottomLeft = bottomPoints[0]; 
+  }
 }
 
 ///
